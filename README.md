@@ -51,10 +51,23 @@ graph LR
 - **`apps/qms/templates/`**: 모든 기술 문서를 일관된 인허가 규격 양식으로 변환하기 위한 스타일 가이드를 관리합니다.
 - **`apps/qms/scripts/`**: CI/CD 파이프라인과 연동되어 각 서비스 브랜치가 머지될 때마다 최신 기술 문서를 자동으로 PDF로 구워냅니다.
 
-### 3. 모노레포 통합 시 이점
-- **일관성**: 모든 앱의 QMS 문서 양식을 하나의 템플릿 엔진으로 통일할 수 있습니다.
-- **버전 동기화**: 프로젝트의 릴리스 시점과 문서 발행 시점을 Git Tag를 통해 완벽하게 동기화할 수 있습니다.
-- **검증 자동화**: CI에서 문서 하이퍼링크 유효성이나 필수 항목 누락 여부를 자동으로 검사할 수 있습니다.
+### 4. Lifecycle of QMS Document
+
+문서의 생애주기는 설계 단계와 자동화 발행 단계로 나뉩니다.
+
+#### **Phase 0: 템플릿 설계 (Design Time & Auto-Drafting)**
+*신규 문서 양식 도입 시 1회 수행*
+1. **Reference Input**: 표준 양식 PDF를 `references/` 폴더에 업로드 및 푸시.
+2. **Auto Analysis**: CI가 새 파일을 감지하면 `scripts/auto-draft-template.js`가 즉시 실행됨.
+3. **Draft Generation**: 시스템이 분석 결과를 바탕으로 `templates/DRAFT_*.md` 초안을 자동 생성하여 저장소에 푸시.
+4. **Final Design**: 인간 설계자가 초안을 확인하고 레이아웃 및 스타일(CSS) 보정 후 확정.
+
+#### **Phase 1: 자동 발행 (Run Time / CI)**
+*매 Push 또는 PR 머지 시 자동 수행*
+1. **Change Detection**: 수정된 `docs/*.md` 또는 `templates/*.md` 파일 감지.
+2. **Variable Injection**: 해당 마크다운 세부 내용과 매칭된 템플릿 결합.
+3. **Signature Overlay**: `assets/stamps/`의 인장 이미지를 활용해 전자 서명 자동 주입.
+4. **Official Release**: 고품질 PDF 생성 후 **GitHub Releases**에 최신 공식 버전으로 등록.
 
 ---
 

@@ -36,6 +36,14 @@ jobs:
       id: date
       run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
 
+    - name: Commit and Push Drafts
+      run: |
+        git config user.name "Antigravity AI"
+        git config user.email "antigravity@example.com"
+        git add templates/DRAFT_*.md docs/*_content.md
+        git commit -m "Auto-generate draft templates from new references" || echo "No new drafts to commit"
+        git push origin main || echo "Nothing to push"
+
     - name: Create Release and Upload PDF
       uses: softprops/action-gh-release@v1
       with:

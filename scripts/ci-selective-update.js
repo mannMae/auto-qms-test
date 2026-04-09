@@ -36,16 +36,25 @@ async function run() {
         
         // 1. Detect changes
         let changedFiles = [];
+        let newReferences = [];
         try {
             const diffOutput = execSync('git diff --name-only HEAD~1 HEAD').toString();
-            changedFiles = diffOutput.split('\n').filter(f => f.startsWith('docs/') && f.endsWith('.md'));
+            const allChanges = diffOutput.split('\n');
+            changedFiles = allChanges.filter(f => f.startsWith('docs/') && f.endsWith('.md'));
+            newReferences = allChanges.filter(f => f.startsWith('references/') && f.endsWith('.pdf'));
         } catch (e) {
             const docs = await fs.readdir('docs');
             changedFiles = docs.filter(f => f.endsWith('.md')).map(f => path.join('docs', f));
         }
 
-        if (changedFiles.length === 0) {
-            console.log('No changed documents detected.');
+        // Handle new references -> Generate Drafts
+        for (const refPath of newReferences) {
+            console.log(`[New Reference Detected] Analyzing: ${refPath}`);
+            execSync(`node scripts/auto-draft-template.js "${refPath}"`);
+        }
+
+        if (changedFiles.length === 0 && newReferences.length === 0) {
+            console.log('No changes detected.');
             return;
         }
 
