@@ -13,11 +13,8 @@
 
 <div class="page-break"></div>
 
-## 제‧개정 이력 (Revision History)
-
-| Rev. | 제‧개정일자 | 페이지 | 제‧개정사유 및 제‧개정내용 | 작성자 |
-| :--- | :--- | :--- | :--- | :--- |
-| {{REVISION}} | {{DATE}} | 전면 | 초기 배포 (신규 제정) | {{AUTHOR}} |
+## 개정 이력 (Revision History)
+{{REVISION_HISTORY}}
 
 <br>
 

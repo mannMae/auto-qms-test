@@ -69,7 +69,20 @@ async function generatePDF(data) {
             finalMarkdown = finalMarkdown.split(key).join(value);
         }
 
-        const contentHtml = await marked.parse(finalMarkdown);
+        let contentHtml = await marked.parse(finalMarkdown);
+
+        // Handle history table if provided
+        if (combined.history && combined.history.length > 0) {
+            let historyTable = '| 버전 | 날짜 | 개정 사유 | 작성자 |\n| :--- | :--- | :--- | :--- |\n';
+            combined.history.forEach(h => {
+                const author = h.author === '{{author}}' ? (frontmatter.author || '김재만') : h.author;
+                historyTable += `| ${h.version} | ${h.date} | ${h.reason} | ${author} |\n`;
+            });
+            contentHtml = contentHtml.replace('{{REVISION_HISTORY}}', await marked.parse(historyTable));
+        } else if (contentHtml.includes('{{REVISION_HISTORY}}')) {
+            contentHtml = contentHtml.replace('{{REVISION_HISTORY}}', '_최초 버전_');
+        }
+
         const cssPath = path.join(__dirname, '../templates/style.css');
         const css = await fs.readFile(cssPath, 'utf8');
 

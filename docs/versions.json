@@ -1,6 +1,14 @@
 {
   "SDP_content.md": {
-    "v": 1,
-    "minor": 1
+    "history": [
+      {
+        "v": 1,
+        "minor": 0,
+        "version": "1.0",
+        "date": "2026-04-09",
+        "reason": "최초 제정",
+        "author": "김재만"
+      }
+    ]
   }
 }

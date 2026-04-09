@@ -13,25 +13,38 @@ async function getNextVersion(fileName, vFromMd) {
         versions = await fs.readJson(VERSION_FILE);
     }
 
-    const entry = versions[fileName] || {};
-    const prev = {
-        v: entry.v !== undefined ? entry.v : (entry.major !== undefined ? entry.major : 0),
-        minor: entry.minor !== undefined ? entry.minor : -1
-    };
+    const entry = versions[fileName] || { history: [] };
+    const latest = entry.history[entry.history.length - 1] || { v: 0, minor: -1 };
     
-    let newV = vFromMd || prev.v;
+    let newV = vFromMd || latest.v;
     let newMinor = 0;
 
-    if (newV === prev.v) {
-        newMinor = prev.minor + 1;
+    if (newV === latest.v) {
+        newMinor = latest.minor + 1;
     } else {
         newMinor = 0; 
     }
 
-    versions[fileName] = { v: newV, minor: newMinor };
+    const nextVer = `${newV}.${newMinor}`;
+    const today = new Date().toISOString().split('T')[0];
+
+    // Add to history
+    entry.history.push({
+        v: newV,
+        minor: newMinor,
+        version: nextVer,
+        date: today,
+        reason: "Content updated via CI",
+        author: "{{author}}" // Placeholder for replacement later
+    });
+
+    versions[fileName] = entry;
     await fs.writeJson(VERSION_FILE, versions, { spaces: 2 });
     
-    return `${newV}.${newMinor}`;
+    return {
+        nextVer,
+        history: entry.history
+    };
 }
 
 async function run() {
@@ -70,11 +83,12 @@ async function run() {
             const { data: frontmatter } = matter(contentRaw);
             
             const fileName = path.basename(filePath);
-            const nextVersion = await getNextVersion(fileName, frontmatter.v || 1);
+            const { nextVer, history } = await getNextVersion(fileName, frontmatter.v || 1);
 
             await generatePDF({
                 contentPath: path.resolve(filePath),
-                revision: nextVersion
+                revision: nextVer,
+                history: history
             });
         }
 
