@@ -1,0 +1,28 @@
+{
+  "name": "auto-qms-with-git",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "이 프로젝트의 목표는 **\"Git 승인이 완료되면 도장이 찍힌 공식 PDF가 생성되는 자동화 체계\"**를 검증하는 것입니다.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mannMae/auto-qms-test.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mannMae/auto-qms-test/issues"
+  },
+  "homepage": "https://github.com/mannMae/auto-qms-test#readme",
+  "dependencies": {
+    "fs-extra": "^11.3.4",
+    "gray-matter": "^4.0.3",
+    "marked": "^18.0.0",
+    "pdf-parse": "^2.4.5",
+    "playwright": "^1.59.1"
+  }
+}

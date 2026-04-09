@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+:root {
+    --primary-color: #1a1a1a;
+    --border-color: #e0e0e0;
+    --table-header: #f8f9fa;
+}
+
+body {
+    font-family: 'Noto Sans KR', 'Inter', sans-serif;
+    line-height: 1.8;
+    color: var(--primary-color);
+    margin: 0;
+    padding: 0;
+}
+
+h1 { font-size: 2.5em; font-weight: 700; margin-bottom: 20px; color: #000; }
+h2 { font-size: 1.8em; font-weight: 700; border-bottom: 2px solid var(--primary-color); padding-bottom: 5px; margin-top: 40px; }
+h3 { font-size: 1.4em; font-weight: 700; margin-top: 30px; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 0.95em;
+}
+
+th, td {
+    border: 1px solid var(--border-color);
+    padding: 12px 15px;
+    text-align: left;
+}
+
+th {
+    background-color: var(--table-header);
+    font-weight: 700;
+}
+
+.cover-page {
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border: 4px double #333;
+    margin: 20px;
+}
+
+.cover-page h2 { border: none; margin: 0; }
+
+#signature-area {
+    width: 120px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: visible;
+}
+
+.stamp-img {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    transform: rotate(-15deg);
+    opacity: 0.85;
+}
+
+.fallback-stamp {
+    border: 3px solid #d32f2f;
+    color: #d32f2f;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-weight: bold;
+    transform: rotate(-15deg);
+    font-size: 14px;
+    text-align: center;
+}
+
+.page-break {
+    page-break-after: always;
+}
+
+/* Typography for content */
+p { margin-bottom: 1em; }
+ul, ol { margin-bottom: 1em; padding-left: 20px; }
+
+@media print {
+    .cover-page { border: none; }
+}
