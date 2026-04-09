@@ -16,6 +16,14 @@
         "date": "2026-04-09",
         "reason": "Content updated via CI",
         "author": "Antigravity AI"
+      },
+      {
+        "v": 1,
+        "minor": 2,
+        "version": "1.2",
+        "date": "2026-04-09",
+        "reason": "Content updated via CI",
+        "author": "Antigravity AI"
       }
     ]
   }
