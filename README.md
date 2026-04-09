@@ -4,11 +4,16 @@
 
 > **"Git 승인이 완료되면 도장이 찍힌 공식 PDF가 생성되는 자동화 체계"**
 
-## 📄 공식 문서 확인 (Artifacts)
-모든 공식 PDF 문서는 GitHub Actions에서 생성되어 보관됩니다. 
-가장 최근의 **성공한 워크플로우**를 클릭하여 하단의 **Artifacts**에서 PDF를 다운로드하세요.
+## 📥 최신 공식 문서 다운로드 (Direct)
+CI/CD를 통해 검증되고 인장이 찍힌 최신 PDF 문서를 바로 다운로드하세요.
 
-👉 **[최신 PDF 결과물 목록 (GitHub Actions)](https://github.com/mannMae/auto-qms-test/actions)**
+👉 **[[최신 공식 PDF 직접 다운로드 (Latest Release)]](https://github.com/mannMae/auto-qms-test/releases/latest)**
+
+---
+
+## 📄 문서 확인 방법 (GitHub 환경)
+1.  **Direct Download (추천)**: 위 링크의 **Releases** 페이지에서 `Assets` 항목의 PDF 파일을 클릭하여 즉시 다운로드합니다.
+2.  **Actions Artifacts**: [Actions](https://github.com/mannMae/auto-qms-test/actions) 탭에서 특정 빌드 기록을 클릭한 후, 최하단의 **Artifacts** 섹션에서 꾸러미를 받을 수 있습니다.
 
 ---
 

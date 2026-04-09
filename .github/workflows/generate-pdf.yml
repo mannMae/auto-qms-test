@@ -30,8 +30,16 @@ jobs:
     - name: Generate PDF (Selective Update)
       run: node scripts/ci-selective-update.js
 
-    - name: Upload PDF Artifact
-      uses: actions/upload-artifact@v4
+    - name: Get current date
+      id: date
+      run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
+    - name: Create Release and Upload PDF
+      uses: softprops/action-gh-release@v1
       with:
-        name: qms-documents
-        path: output/*.pdf
+        files: output/*.pdf
+        tag_name: latest
+        name: "Latest QMS Documents (${{ steps.date.outputs.date }})"
+        body: "CI/CD를 통해 자동으로 생성된 최신 QMS 공식 문서입니다."
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
