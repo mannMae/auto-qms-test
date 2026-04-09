@@ -45,7 +45,10 @@ jobs:
         echo "--- Current versions.json state ---"
         cat docs/versions.json || echo "No versions.json found"
         
-        git add templates/DRAFT_*.md docs/*_content.md docs/versions.json
+        git add docs/versions.json
+        # Check if files exist before adding to avoid fatal pathspec errors
+        ls templates/DRAFT_*.md >/dev/null 2>&1 && git add templates/DRAFT_*.md || echo "No draft templates to add"
+        ls docs/*_content.md >/dev/null 2>&1 && git add docs/*_content.md || echo "No content documents to add"
         
         if ! git diff --cached --quiet; then
           echo "Changes detected. Committing..."
