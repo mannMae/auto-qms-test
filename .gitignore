@@ -1,6 +1,5 @@
 node_modules/
 output/*.pdf
-references/
 .DS_Store
 *.log
 # assets/*.png  # User might want to keep some default images, but maybe ignore real signatures
