@@ -35,22 +35,31 @@ jobs:
       id: date
       run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
 
-    - name: Commit and Push Drafts
+    - name: Commit and Push Metadata
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         git config user.name "Antigravity AI"
         git config user.email "antigravity@example.com"
         
-        # 새로운 초안 파일, 컨텐츠 소스, 그리고 업데이트된 버전 정보(versions.json)를 stage
-        git add templates/DRAFT_*.md docs/*_content.md docs/versions.json 2>/dev/null || echo "No changes to stage."
+        echo "--- Current versions.json state ---"
+        cat docs/versions.json || echo "No versions.json found"
         
-        # 스테이징된 변경 사항이 있을 때만 커밋 및 푸시 수행
+        git add templates/DRAFT_*.md docs/*_content.md docs/versions.json
+        
         if ! git diff --cached --quiet; then
-          git commit -m "Auto-generate draft templates or update versions [skip ci]"
-          # 다른 커밋과 충돌나지 않도록 리베이스 후 푸시
-          git pull origin main --rebase
-          git push origin main
+          echo "Changes detected. Committing..."
+          git commit -m "Auto-update QMS metadata [skip ci]"
+          
+          echo "Attempting to push back to: ${{ github.ref_name }}"
+          # Fetch and rebase to avoid conflicts
+          git pull origin ${{ github.ref_name }} --rebase
+          git push origin HEAD:${{ github.ref_name }}
+          
+          echo "--- Resulting versions.json state ---"
+          cat docs/versions.json
         else
-          echo "Nothing to commit. Skipping git push."
+          echo "No changes to commit. Skipping push."
         fi
 
     - name: Create Release and Upload PDF
