@@ -39,13 +39,16 @@ jobs:
       run: |
         git config user.name "Antigravity AI"
         git config user.email "antigravity@example.com"
-        git add templates/DRAFT_*.md docs/*_content.md
-        # 변경 사항이 있을 때만 커밋 수행
+        
+        # 새로운 초안 파일이나 컨텐츠 소스가 있을 때만 stage
+        git add templates/DRAFT_*.md docs/*_content.md 2>/dev/null || echo "No new draft files to stage."
+        
+        # 스테이징된 변경 사항이 있을 때만 커밋 및 푸시 수행
         if ! git diff --cached --quiet; then
           git commit -m "Auto-generate draft templates from new references"
           git push origin main
         else
-          echo "No new drafts or changes to commit."
+          echo "Nothing to commit. Skipping git push."
         fi
 
     - name: Create Release and Upload PDF
