@@ -1,6 +1,16 @@
-# QMS Digital-Auto-Doc Toy Project
+# QMS Digital-Auto-Doc 🚀
 
-이 프로젝트의 목표는 **"Git 승인이 완료되면 도장이 찍힌 공식 PDF가 생성되는 자동화 체계"**를 검증하는 것입니다.
+[![Generate QMS PDF](https://github.com/mannMae/auto-qms-test/actions/workflows/generate-pdf.yml/badge.svg)](https://github.com/mannMae/auto-qms-test/actions/workflows/generate-pdf.yml)
+
+> **"Git 승인이 완료되면 도장이 찍힌 공식 PDF가 생성되는 자동화 체계"**
+
+## 📄 공식 문서 확인 (Artifacts)
+모든 공식 PDF 문서는 GitHub Actions에서 생성되어 보관됩니다. 
+가장 최근의 **성공한 워크플로우**를 클릭하여 하단의 **Artifacts**에서 PDF를 다운로드하세요.
+
+👉 **[최신 PDF 결과물 목록 (GitHub Actions)](https://github.com/mannMae/auto-qms-test/actions)**
+
+---
 
 ## 1. 프로젝트 개요
 의료기기 QMS 문서 자동화 시스템을 위한 실험적 프로젝트입니다. 마크다운으로 작성된 SDP(소프트웨어 개발 계획서)를 승인 로그와 함께 공식적인 PDF로 변환하는 시스템을 구축합니다.
