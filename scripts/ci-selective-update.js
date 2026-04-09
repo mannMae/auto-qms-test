@@ -13,7 +13,11 @@ async function getNextVersion(fileName, vFromMd) {
         versions = await fs.readJson(VERSION_FILE);
     }
 
-    const prev = versions[fileName] || { v: 0, minor: -1 };
+    const entry = versions[fileName] || {};
+    const prev = {
+        v: entry.v !== undefined ? entry.v : (entry.major !== undefined ? entry.major : 0),
+        minor: entry.minor !== undefined ? entry.minor : -1
+    };
     
     let newV = vFromMd || prev.v;
     let newMinor = 0;
