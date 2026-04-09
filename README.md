@@ -17,6 +17,33 @@ CI/CD를 통해 검증되고 인장이 찍힌 최신 PDF 문서를 바로 다운
 
 ---
 
+## 🏗️ Architecture & Workflows
+
+이 시스템은 **"Code as Documentation"** 철학을 기반으로 설계되었으며, 향후 메인 프로젝트의 **Monorepo (`apps/qms/`)** 환경에 통합되는 것을 전제로 합니다.
+
+### 1. 시스템 구조 (System Flow)
+```mermaid
+graph TD
+    A[Markdown Source /docs] -- "1. Content Update" --> B(Template Engine /templates)
+    B -- "2. Variable Injection" --> C{PDF Generator /scripts}
+    D[Assets /assets] -- "3. Stamp & Digital Signature" --> C
+    C -- "4. Playwright Rendering" --> E[.pdf Output]
+    E -- "5. CI/CD Release" --> F[GitHub Releases]
+```
+
+### 2. 주요 역할 (Directory Roles)
+- **`docs/`**: 기획자나 개발자가 실제 내용을 작성하는 원천 소스입니다. (Single Source of Truth)
+- **`templates/`**: 의료기기 인허가 규격에 맞춘 고정된 레이아웃(표지, TOC, 헤더/푸터)과 스타일(CSS)을 관리합니다.
+- **`scripts/`**: 마크다운을 해석하여 변수를 치환하고 PDF로 변환하는 핵심 로직(Playwright 기반)입니다.
+- **`assets/`**: 각 승인권자의 인장(Stamp) 및 서명 이미지를 중앙 집중식으로 관리합니다.
+
+### 3. 모노레포 통합 시 이점
+- **일관성**: 모든 앱의 QMS 문서 양식을 하나의 템플릿 엔진으로 통일할 수 있습니다.
+- **버전 동기화**: 프로젝트의 릴리스 시점과 문서 발행 시점을 Git Tag를 통해 완벽하게 동기화할 수 있습니다.
+- **검증 자동화**: CI에서 문서 하이퍼링크 유효성이나 필수 항목 누락 여부를 자동으로 검사할 수 있습니다.
+
+---
+
 ## 1. 프로젝트 개요
 의료기기 QMS 문서 자동화 시스템을 위한 실험적 프로젝트입니다. 마크다운으로 작성된 SDP(소프트웨어 개발 계획서)를 승인 로그와 함께 공식적인 PDF로 변환하는 시스템을 구축합니다.
 
