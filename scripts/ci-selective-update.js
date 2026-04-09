@@ -35,7 +35,7 @@ async function getNextVersion(fileName, vFromMd) {
         version: nextVer,
         date: today,
         reason: "Content updated via CI",
-        author: "{{author}}" // Placeholder for replacement later
+        author: "Antigravity AI" // CI에서 업데이트할 때 작성자 이름을 명시적으로 설정
     });
 
     versions[fileName] = entry;
