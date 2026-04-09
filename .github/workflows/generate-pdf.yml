@@ -17,11 +17,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Use Node.js
+    - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
-        cache: 'npm'
+        node-version: 24
 
     - name: Install dependencies
       run: npm install
@@ -41,8 +40,13 @@ jobs:
         git config user.name "Antigravity AI"
         git config user.email "antigravity@example.com"
         git add templates/DRAFT_*.md docs/*_content.md
-        git commit -m "Auto-generate draft templates from new references" || echo "No new drafts to commit"
-        git push origin main || echo "Nothing to push"
+        # 변경 사항이 있을 때만 커밋 수행
+        if ! git diff --cached --quiet; then
+          git commit -m "Auto-generate draft templates from new references"
+          git push origin main
+        else
+          echo "No new drafts or changes to commit."
+        fi
 
     - name: Create Release and Upload PDF
       uses: softprops/action-gh-release@v1
