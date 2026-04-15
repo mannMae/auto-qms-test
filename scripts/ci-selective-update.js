@@ -4,8 +4,16 @@ import generatePDF from './generate-pdf.js';
 import fs from 'fs-extra';
 import matter from 'gray-matter';
 
-const VERSION_FILE = 'docs/versions.json';
-const OUTPUT_DIR = 'dist/docs';
+let DOCS_DIR = process.argv[2] || 'docs';
+let REFERENCES_DIR = process.argv[3] || 'references';
+let OUTPUT_DIR = process.argv[4] || 'output';
+let VERSION_FILE = process.argv[5] || path.join(DOCS_DIR, 'versions.json');
+
+// Ensure directories are relative to current workspace if they aren't absolute
+if (!path.isAbsolute(DOCS_DIR)) DOCS_DIR = path.resolve(process.cwd(), DOCS_DIR);
+if (!path.isAbsolute(REFERENCES_DIR)) REFERENCES_DIR = path.resolve(process.cwd(), REFERENCES_DIR);
+if (!path.isAbsolute(OUTPUT_DIR)) OUTPUT_DIR = path.resolve(process.cwd(), OUTPUT_DIR);
+if (!path.isAbsolute(VERSION_FILE)) VERSION_FILE = path.resolve(process.cwd(), VERSION_FILE);
 
 async function getNextVersion(fileName, vFromMd) {
     let versions = {};
@@ -55,13 +63,20 @@ async function run() {
         let changedFiles = [];
         let newReferences = [];
         try {
+            // In GitHub Actions, we often want to compare HEAD with the previous commit
             const diffOutput = execSync('git diff --name-only HEAD~1 HEAD').toString();
             const allChanges = diffOutput.split('\n');
-            changedFiles = allChanges.filter(f => f.startsWith('docs/') && f.endsWith('.md'));
-            newReferences = allChanges.filter(f => f.startsWith('references/') && f.endsWith('.pdf'));
+            const relativeDocsPath = path.relative(process.cwd(), DOCS_DIR);
+            const relativeRefsPath = path.relative(process.cwd(), REFERENCES_DIR);
+            
+            changedFiles = allChanges.filter(f => f.startsWith(relativeDocsPath) && f.endsWith('.md')).map(f => path.resolve(process.cwd(), f));
+            newReferences = allChanges.filter(f => f.startsWith(relativeRefsPath) && f.endsWith('.pdf')).map(f => path.resolve(process.cwd(), f));
         } catch (e) {
-            const docs = await fs.readdir('docs');
-            changedFiles = docs.filter(f => f.endsWith('.md')).map(f => path.join('docs', f));
+            console.log('Falling back to scanning all files due to git error:', e.message);
+            if (await fs.pathExists(DOCS_DIR)) {
+                const docs = await fs.readdir(DOCS_DIR);
+                changedFiles = docs.filter(f => f.endsWith('.md')).map(f => path.join(DOCS_DIR, f));
+            }
         }
 
         // Handle new references -> Generate Drafts
@@ -88,7 +103,8 @@ async function run() {
             await generatePDF({
                 contentPath: path.resolve(filePath),
                 revision: nextVer,
-                history: history
+                history: history,
+                outputDir: OUTPUT_DIR
             });
         }
 

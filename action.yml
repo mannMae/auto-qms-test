@@ -1,0 +1,27 @@
+name: 'Auto QMS'
+description: 'Automated QMS Document Versioning and PDF Generation'
+inputs:
+  docs_dir:
+    description: 'Directory containing markdown documents'
+    required: false
+    default: 'docs'
+  references_dir:
+    description: 'Directory containing PDF references'
+    required: false
+    default: 'references'
+  output_dir:
+    description: 'Directory to store generated PDFs'
+    required: false
+    default: 'output'
+  version_file:
+    description: 'File to track versions'
+    required: false
+    default: 'docs/versions.json'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.docs_dir }}
+    - ${{ inputs.references_dir }}
+    - ${{ inputs.output_dir }}
+    - ${{ inputs.version_file }}

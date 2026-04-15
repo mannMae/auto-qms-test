@@ -90,9 +90,12 @@ async function generatePDF(data) {
 
         const browser = await chromium.launch();
         const page = await browser.newPage();
-        await page.setContent(fullHtml, { waitUntil: 'networkidle' });
+        
+        // Use the directory of the content file as base URL for relative images
+        const baseUrl = `file://${path.dirname(path.resolve(contentPath))}/`;
+        await page.setContent(fullHtml, { waitUntil: 'networkidle', baseURL: baseUrl });
 
-        const outputDir = path.join(__dirname, '../output');
+        const outputDir = data.outputDir || path.join(__dirname, '../output');
         await fs.ensureDir(outputDir);
         const baseName = path.basename(contentPath, '.md');
         const outputPath = path.join(outputDir, `${baseName}.pdf`);
