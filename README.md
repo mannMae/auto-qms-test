@@ -17,39 +17,47 @@ CI/CD를 통해 검증되고 인장이 찍힌 최신 PDF 문서를 바로 다운
 
 ---
 
-## 🏗️ Architecture & Workflows
+## 🏗️ Architecture & Core Concepts
 
-이 시스템은 **"Code as Documentation"** 철학을 기반으로 설계되었으며, 향후 메인 프로젝트의 **Monorepo (`apps/qms/`)** 환경에 통합되는 것을 전제로 합니다.
+본 프로젝트는 **"GitHub Action 기반의 QMS 전용 엔진"**으로 동작하며, 개별 프로젝트 레포지토리와 연동되어 기술 문서의 형식을 일관되게 관리합니다.
 
-### 1. 서비스 통합 아키텍처 (Full-Stack & QMS)
+### 1. 시스템 구조 (Action vs User Project)
 ```mermaid
-graph LR
-    subgraph Monorepo ["Monorepo (Root)"]
-        direction TB
-        F[apps/frontend]
-        B[apps/backend]
-        AI[apps/ai-server]
-        Q[apps/qms]
+graph TD
+    subgraph "A. QMS Action Repository (이 엔진)"
+        Logic["⚙️ Core Logic (Node.js/Playwright)"]
+        Temp["📄 Standard Templates (.md)"]
+        Stamp["🎨 Official Stamps/Assets (.png)"]
+        CSS["🎨 Design System (CSS)"]
     end
 
-    F -- "Develop Spec" --> Q
-    B -- "API Spec / Test Logs" --> Q
-    AI -- "Algorithm Validation" --> Q
-
-    subgraph QMS_Engine ["QMS Automation Engine"]
-        Q -- "Markdown Docs" --> TE(Template Engine)
-        TE -- "Puppeteer/Playwright" --> PDF[.pdf Documents]
+    subgraph "B. User Project Repository (실무 프로젝트)"
+        Content["📝 MD Documents (Content Only)"]
+        Ver["📊 versions.json (Current Status)"]
+        subgraph "Output (결과물)"
+            PDF["📕 Official QMS PDF"]
+        end
     end
 
-    PDF -- "Automated Release" --> REL[GitHub Releases]
-    REL -- "Official Records" --> AUDIT((Regulatory Audit))
+    %% Interaction Flow
+    Content -->|1. Edit & Push| Workflow["🚀 GitHub Actions Workflow"]
+    Workflow -->|2. Call Action| Logic
+    
+    Logic -->|3. Combine| Temp
+    Logic --- Stamp
+    Logic --- CSS
+    
+    Logic -->|4. Apply Logic to| Content
+    Logic -->|5. Update Version| Ver
+    
+    Logic -->|6. Result| PDF
+    PDF -->|7. Auto Commit| B["User Project"]
 ```
 
-### 2. 주요 역할 (Directory Roles)
-- **`apps/frontend`, `backend`, `ai-server`**: 실제 서비스 비즈니스 로직을 개발합니다.
-- **`apps/qms/docs/`**: 위 서비스들의 개발 과정에서 발생하는 명세서(SDP, SRS), 위험 분석(RM), 테스트 보고서(V&V) 등을 마크다운 형태로 집대성합니다.
-- **`apps/qms/templates/`**: 모든 기술 문서를 일관된 인허가 규격 양식으로 변환하기 위한 스타일 가이드를 관리합니다.
-- **`apps/qms/scripts/`**: CI/CD 파이프라인과 연동되어 각 서비스 브랜치가 머지될 때마다 최신 기술 문서를 자동으로 PDF로 구워냅니다.
+### 2. 주요 스크립트 역할 (Core Logic)
+- **`ci-selective-update.js`**: 변경된 파일만 감지하여 효율적으로 PDF를 굽고 버전을 상향합니다.
+- **`generate-pdf.js`**: 마크다운을 공식 양식에 맞춰 고품질 PDF로 변환합니다.
+- **`auto-draft-template.js`**: 참고용 PDF를 분석하여 새로운 마크다운 초안을 자동 생성합니다.
 
 ### 4. Lifecycle of QMS Document
 
@@ -94,15 +102,13 @@ graph LR
 ### 단계 4: CI/CD 연동 (GitHub Actions)
 - **목표**: Pull Request가 Merge 될 때 자동으로 상기 스크립트를 실행하여 PDF를 생성하고 저장.
 
-## 4. 폴더 구조
-```text
-.
-├── templates/          # Markdown 템플릿 파일
-├── docs/               # 실제 작성될 QMS 문서 (Source)
-├── scripts/            # PDF 변환 및 승인 로직 스크립트
-├── assets/             # 인장 이미지, 로고, 폰트 등
-├── output/             # 생성된 PDF 저장 (Git ignore)
-├── .github/workflows/  # CI/CD 자동화 정의
-├── package.json
-└── README.md
-```
+## 📂 폴더 구조 및 역할
+| 폴더/파일 | 역할 |
+| :--- | :--- |
+| `scripts/` | 핵심 변환(PDF) 및 버전 관리 로직 |
+| `templates/` | 공식 문서 양식(SDP, SRS 등) 및 스타일 파일 |
+| `assets/` | 서명 인장, 로고 등 공통 자산 |
+| `action.yml` | GitHub Action 설정 정의 |
+| `Dockerfile` | Playwright 실행 환경 |
+| `docs/` | (예시용) 실제 작성될 QMS 문서 소스 |
+| `output/` | (예시용) 생성된 PDF 저장 폴더 |
