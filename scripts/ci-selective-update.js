@@ -91,6 +91,10 @@ async function run() {
         }
 
         for (const filePath of changedFiles) {
+            if (!(await fs.pathExists(filePath))) {
+                console.log(`[Skip] File deleted or missing: ${filePath}`);
+                continue;
+            }
             console.log(`Processing: ${filePath}`);
             
             // Read MD to get Major version

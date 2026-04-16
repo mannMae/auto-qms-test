@@ -36,6 +36,15 @@ async function generatePDF(data) {
         const templatePath = path.join(__dirname, '../templates/sdp_template.md');
         const contentPath = data.contentPath || path.join(__dirname, '../docs/SDP_content.md');
         
+        if (!(await fs.pathExists(templatePath))) {
+            console.warn(`[Skip] Template not found: ${templatePath}`);
+            return null;
+        }
+        if (!(await fs.pathExists(contentPath))) {
+            console.warn(`[Skip] Content file not found: ${contentPath}`);
+            return null;
+        }
+
         const templateRaw = await fs.readFile(templatePath, 'utf8');
         const contentRaw = await fs.readFile(contentPath, 'utf8');
         

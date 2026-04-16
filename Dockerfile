@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/playwright:v1.49.1-noble
+FROM mcr.microsoft.com/playwright:v1.59.1-noble
 
 # Set working directory for the tool logic
 WORKDIR /app
